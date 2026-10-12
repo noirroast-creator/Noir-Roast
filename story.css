@@ -1,0 +1,66 @@
+/* NOIR ROAST - Our Story page. Header/footer come from styles.css. */
+
+body.story-page { background: var(--bg); }
+
+.st-wrap { width: min(1200px, 100% - 96px); margin-inline: auto; }
+.st-narrow { width: min(680px, 100% - 48px); margin-inline: auto; }
+
+/* ---------- Intro ---------- */
+.st-hero { padding: 104px 0 64px; text-align: center; }
+.st-eyebrow { display: inline-flex; align-items: center; gap: 16px; font-family: var(--display); font-size: 12px; letter-spacing: 0.32em; text-transform: uppercase; color: #8a6b24; }
+.st-eyebrow::before, .st-eyebrow::after { content: ""; width: 36px; height: 1px; background: #c9b27a; }
+.st-title { margin-top: 28px; font-family: var(--serif); font-weight: 600; font-size: clamp(44px, 6.2vw, 84px); line-height: 1; letter-spacing: -0.02em; color: var(--ink); }
+.st-title em { font-style: italic; font-weight: 500; color: #4a3527; }
+.st-lead { width: min(620px, 100%); margin: 36px auto 0; font-size: clamp(17px, 1.6vw, 20px); line-height: 1.75; color: #4b3e32; }
+
+/* ---------- Image ---------- */
+.st-figure { margin: 0; overflow: hidden; background: #e9e0d2; }
+.st-figure img { width: 100%; height: auto; aspect-ratio: 21 / 9; object-fit: cover; object-position: 65% 72%; }
+
+/* ---------- Body copy ---------- */
+.st-body { padding: 96px 0 88px; text-align: center; }
+.st-rule { display: block; width: 1px; height: 56px; margin: 0 auto 40px; background: linear-gradient(#c9b27a, transparent); }
+.st-text { font-family: var(--serif); font-weight: 500; font-size: clamp(24px, 2.6vw, 34px); line-height: 1.5; letter-spacing: -0.005em; color: var(--ink); }
+
+/* ---------- Closing statement ---------- */
+.st-closing { padding-bottom: 120px; }
+.st-panel { padding: clamp(56px, 8vw, 104px) 24px; text-align: center; background: var(--panel); }
+.st-line { font-family: var(--serif); font-weight: 500; font-size: clamp(30px, 4.4vw, 56px); line-height: 1.18; letter-spacing: -0.015em; color: var(--ink); }
+.st-line + .st-line { margin-top: 6px; }
+.st-line-gold { margin-top: 28px !important; color: #8a6b24; }
+.st-line-gold em { font-style: italic; font-weight: 500; }
+.st-cta { width: auto; height: 54px; margin-top: 52px; padding: 0 40px; font-size: 12px; }
+
+/* ---------- Gentle reveal (only when JS is on) ---------- */
+.js [data-reveal] { opacity: 0; transform: translateY(18px); transition: opacity .9s cubic-bezier(.22, .8, .24, 1), transform .9s cubic-bezier(.22, .8, .24, 1); }
+.js [data-reveal].is-in { opacity: 1; transform: none; }
+.js .st-title[data-reveal] { transition-delay: .08s; }
+.js .st-lead[data-reveal] { transition-delay: .16s; }
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] { opacity: 1; transform: none; transition: none; }
+}
+
+/* ---------- Active nav link ---------- */
+.main-nav a[aria-current="page"] { color: #8a6b24; }
+
+/* ---------- Responsive ---------- */
+@media (min-width: 768px) and (max-width: 1023.98px) {
+  .st-wrap { width: calc(100% - 64px); }
+  .st-hero { padding: 80px 0 52px; }
+  .st-body { padding: 80px 0 72px; }
+  .st-closing { padding-bottom: 96px; }
+}
+@media (max-width: 767.98px) {
+  .st-wrap { width: calc(100% - 32px); }
+  .st-hero { padding: 60px 0 40px; }
+  .st-eyebrow { font-size: 11px; gap: 12px; }
+  .st-eyebrow::before, .st-eyebrow::after { width: 24px; }
+  .st-title { margin-top: 22px; }
+  .st-lead { margin-top: 26px; text-align: left; }
+  .st-figure img { aspect-ratio: 4 / 5; object-position: 66% 50%; }
+  .st-body { padding: 64px 0 56px; }
+  .st-rule { height: 40px; margin-bottom: 28px; }
+  .st-panel { padding: 56px 20px; }
+  .st-cta { margin-top: 40px; width: 100%; }
+  .st-closing { padding-bottom: 72px; }
+}

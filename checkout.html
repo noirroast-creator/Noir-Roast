@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Checkout | NOIR ROAST</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Jost:wght@400;500&family=Nunito+Sans:opsz,wght@6..12,400;6..12,500;6..12,600;6..12,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="checkout.css">
+</head>
+<body class="checkout">
+  <header class="co-header">
+    <div class="co-wrap co-header-inner">
+      <a class="co-back" href="index.html" aria-label="Back to the shop">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      </a>
+      <h1 class="co-title">Checkout</h1>
+      <a class="logo co-logo" href="index.html">NOIR ROAST</a>
+    </div>
+  </header>
+
+  <nav class="co-steps" aria-label="Checkout progress">
+    <ol>
+      <li class="is-current" data-step-ind="1" aria-current="step"><span class="co-step-dot">1</span><span class="co-step-label">Shipping</span></li>
+    </ol>
+  </nav>
+
+  <main class="co-wrap co-layout" id="main">
+    <div class="co-main">
+
+      <!-- Step 1: shipping -->
+      <section class="co-card" data-step="1" aria-labelledby="ship-title">
+        <h2 id="ship-title" tabindex="-1">Shipping Information</h2>
+        <form id="ship-form" novalidate>
+          <div class="co-grid co-grid-2">
+            <div class="field">
+              <label for="f-name">Full name <b aria-hidden="true">*</b></label>
+              <input id="f-name" name="name" type="text" autocomplete="name" required>
+              <p class="field-error" id="e-name" role="alert"></p>
+            </div>
+            <div class="field">
+              <label for="f-email">Email address <b aria-hidden="true">*</b></label>
+              <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required>
+              <p class="field-error" id="e-email" role="alert"></p>
+            </div>
+          </div>
+          <div class="field">
+            <label for="f-phone">Phone number <b aria-hidden="true">*</b></label>
+            <input id="f-phone" name="phone" type="tel" autocomplete="tel-national" inputmode="numeric" maxlength="10" required>
+            <p class="field-error" id="e-phone" role="alert"></p>
+          </div>
+
+          <h3 class="co-subtitle">Delivery Address</h3>
+          <div class="field">
+            <label for="f-addr1">Address line 1 <b aria-hidden="true">*</b></label>
+            <input id="f-addr1" name="addr1" type="text" autocomplete="address-line1" required>
+            <p class="field-error" id="e-addr1" role="alert"></p>
+          </div>
+          <div class="field">
+            <label for="f-addr2">Address line 2</label>
+            <input id="f-addr2" name="addr2" type="text" autocomplete="address-line2">
+          </div>
+          <div class="co-grid co-grid-3">
+            <div class="field">
+              <label for="f-city">City <b aria-hidden="true">*</b></label>
+              <input id="f-city" name="city" type="text" autocomplete="address-level2" required>
+              <p class="field-error" id="e-city" role="alert"></p>
+            </div>
+            <div class="field">
+              <label for="f-state">State <b aria-hidden="true">*</b></label>
+              <select id="f-state" name="state" autocomplete="address-level1" required>
+                <option value="">Select state</option>
+              </select>
+              <p class="field-error" id="e-state" role="alert"></p>
+            </div>
+            <div class="field">
+              <label for="f-pin">PIN code <b aria-hidden="true">*</b></label>
+              <input id="f-pin" name="pin" type="text" autocomplete="postal-code" inputmode="numeric" maxlength="6" required>
+              <p class="field-error" id="e-pin" role="alert"></p>
+            </div>
+          </div>
+          <div class="field">
+            <label for="f-landmark">Landmark</label>
+            <input id="f-landmark" name="landmark" type="text" placeholder="Nearby landmark (optional)">
+          </div>
+          <button class="btn btn-dark co-submit" type="submit">Place order <span aria-hidden="true">&rarr;</span></button>
+          <p class="co-form-error" data-form-error role="alert" hidden></p>
+          <p class="co-fineprint">Your details are used only to deliver your order.</p>
+        </form>
+      </section>
+
+      <!-- Empty bag -->
+      <section class="co-card co-empty" data-empty hidden>
+        <h2>Your bag is empty</h2>
+        <p>Add something from the shop to start your checkout.</p>
+        <a class="btn btn-dark co-submit" href="index.html#shop">Back to the shop <span aria-hidden="true">&rarr;</span></a>
+      </section>
+
+      <!-- Confirmation -->
+      <section class="co-card co-done" data-done hidden aria-labelledby="done-title">
+        <div class="co-done-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+        <h2 id="done-title" tabindex="-1">Thank you, <span data-done-name></span></h2>
+        <p class="co-done-lead">Your order <strong data-done-id></strong> is confirmed.</p>
+        <p>Order total <strong data-done-total></strong></p>
+        <p>Estimated delivery <strong data-done-eta></strong></p>
+        <a class="btn btn-dark co-submit" href="index.html">Continue shopping <span aria-hidden="true">&rarr;</span></a>
+      </section>
+    </div>
+
+    <aside class="co-card co-summary" aria-labelledby="sum-title" data-summary>
+      <h2 id="sum-title">Order Summary</h2>
+      <ul class="co-items" data-items></ul>
+
+      <dl class="co-lines">
+        <div><dt>Subtotal</dt><dd data-sum-subtotal></dd></div>
+        <div data-sum-delivery-row><dt>Delivery</dt><dd data-sum-delivery></dd></div>
+      </dl>
+      <div class="co-total"><span>Total</span><strong data-sum-total></strong></div>
+      <p class="co-secure">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="9.5" rx="1.8"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/></svg>
+        Secure SSL Encrypted Checkout
+      </p>
+    </aside>
+  </main>
+
+  <p class="sr-only" aria-live="polite" data-status></p>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="config.js"></script>
+  <script src="noir-data.js"></script>
+  <script src="checkout.js"></script>
+</body>
+</html>
