@@ -49,7 +49,8 @@ create table if not exists public.order_stats (
   goal           integer not null default 1000,
   updated_at     timestamptz not null default now()
 );
-insert into public.order_stats (id) values (1) on conflict (id) do nothing;
+-- The counter starts at 59. Real orders then add to it one by one.
+insert into public.order_stats (id, orders_placed) values (1, 59) on conflict (id) do nothing;
 
 -- 4) Row Level Security: lock everything, then open only what visitors need.
 alter table public.products    enable row level security;
