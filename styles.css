@@ -758,7 +758,6 @@ body.cart-open { overflow: hidden; }
 .cart-summary { margin-top: 24px; }
 .cart-lines { margin: 0; display: grid; gap: 14px; }
 .cart-lines div { display: flex; justify-content: space-between; font-size: 17px; }
-.cart-lines div[hidden] { display: none; }
 .cart-lines dt, .cart-lines dd { margin: 0; }
 .cart-lines dd { font-variant-numeric: lining-nums; }
 .cart-eta { display: grid; gap: 4px; margin-top: 18px; padding: 14px 16px; border: 1px solid #e5dfc9; border-radius: 4px; }
@@ -841,3 +840,8 @@ body.cart-open { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .progress-fill, .progress-sparks, .progress-tip, .progress-marker { transition: none; }
 }
+
+/* Sale pricing: current price first, original price crossed out */
+.price .price-now { font-weight: inherit; }
+.price .price-was { margin-left: 4px; font-family: var(--sans); font-weight: 400; font-size: 0.62em; color: #8b7f71; text-decoration: line-through; text-decoration-thickness: 1px; }
+.price .price-was span { margin: 0; font-size: inherit; }

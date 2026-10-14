@@ -1,7 +1,5 @@
 // NOIR ROAST checkout: shipping form -> confirmation. Reads the cart saved by the shop page.
 const STORAGE_KEY = 'noir-roast-cart';
-const FREE_SHIPPING_OVER = 1000;
-const DELIVERY_FEE = 69;
 const DELIVERY_DAYS = 7;
 
 const STATES = [
@@ -53,11 +51,7 @@ const renderSummary = () => {
     return li;
   }));
   const subtotal = items.reduce((n, i) => n + i.qty * Number(i.price), 0);
-  const delivery = subtotal >= FREE_SHIPPING_OVER ? 0 : DELIVERY_FEE;
-  $('[data-sum-subtotal]').textContent = rupee(subtotal);
-  $('[data-sum-delivery-row]').hidden = delivery === 0;
-  $('[data-sum-delivery]').textContent = rupee(delivery);
-  $('[data-sum-total]').textContent = rupee(subtotal + delivery);
+  $('[data-sum-total]').textContent = rupee(subtotal);
 };
 
 /* ---------- form ---------- */

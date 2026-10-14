@@ -87,7 +87,6 @@ declare
   v_pin    text := btrim(coalesce(p_customer->>'pin', ''));
   v_land   text := nullif(btrim(coalesce(p_customer->>'landmark', '')), '');
   v_subtotal integer := 0;
-  v_delivery integer;
   v_order_id uuid;
   v_number   text;
   v_item     jsonb;
@@ -112,13 +111,12 @@ begin
     v_subtotal := v_subtotal + v_prod.price_inr * v_qty;
   end loop;
 
-  v_delivery := case when v_subtotal >= 1000 then 0 else 69 end;
   v_number   := 'NR-' || upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 8));
 
   insert into public.orders (order_number, full_name, email, phone, address_line1, address_line2,
                              city, state, pin_code, landmark, subtotal_inr, delivery_inr, total_inr)
   values (v_number, v_name, v_email, v_phone, v_addr1, v_addr2,
-          v_city, v_state, v_pin, v_land, v_subtotal, v_delivery, v_subtotal + v_delivery)
+          v_city, v_state, v_pin, v_land, v_subtotal, 0, v_subtotal)
   returning id into v_order_id;
 
   for v_item in select * from jsonb_array_elements(p_items) loop
@@ -129,8 +127,7 @@ begin
 
   update public.order_stats set orders_placed = orders_placed + 1, updated_at = now() where id = 1;
 
-  return jsonb_build_object('order_number', v_number, 'subtotal', v_subtotal,
-                            'delivery', v_delivery, 'total', v_subtotal + v_delivery);
+  return jsonb_build_object('order_number', v_number, 'subtotal', v_subtotal, 'total', v_subtotal);
 end;
 $$;
 

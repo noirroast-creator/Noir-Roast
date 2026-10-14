@@ -79,7 +79,6 @@ a.co-submit { text-decoration: none; }
 .co-item-price { font-size: 16px; font-weight: 600; color: var(--ink); font-variant-numeric: lining-nums; }
 
 .co-lines { margin: 24px 0 0; display: grid; gap: 14px; }
-.co-lines div[hidden] { display: none; }
 .co-lines div { display: flex; justify-content: space-between; font-size: 16px; color: #4b3e32; }
 .co-lines dt, .co-lines dd { margin: 0; }
 .co-lines dd { font-variant-numeric: lining-nums; color: var(--ink); }
@@ -126,3 +125,6 @@ body.checkout.is-empty .co-layout { grid-template-columns: minmax(0, 560px); jus
 .co-form-error { margin-top: 16px; padding: 12px 16px; font-size: 14.5px; color: #8e3427; background: #fbeee9; border-left: 2px solid #b04a3a; }
 .co-form-error[hidden] { display: none; }
 .co-submit:disabled { opacity: .7; cursor: progress; }
+
+/* Total sits directly under the items now: one hairline, not two */
+.co-items + .co-total { margin-top: 22px; padding-top: 0; border-top: 0; }

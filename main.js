@@ -1,6 +1,4 @@
 // NOIR ROAST: order-goal progress + shopping cart drawer.
-const FREE_SHIPPING_OVER = 1000;
-const DELIVERY_FEE = 69;
 const DELIVERY_DAYS = 7;
 const STORAGE_KEY = 'noir-roast-cart';
 
@@ -77,7 +75,6 @@ const initCart = () => {
     const items = [...cart.values()];
     const count = items.reduce((n, i) => n + i.qty, 0);
     const subtotal = items.reduce((n, i) => n + i.qty * i.price, 0);
-    const delivery = subtotal >= FREE_SHIPPING_OVER ? 0 : DELIVERY_FEE;
 
     list.replaceChildren(...items.map((item) => {
       const li = el('li', 'cart-item');
@@ -105,10 +102,7 @@ const initCart = () => {
 
     q('[data-cart-empty]').hidden = count > 0;
     q('[data-cart-summary]').hidden = count === 0;
-    q('[data-cart-subtotal]').textContent = rupee(subtotal);
-    q('[data-cart-delivery-row]').hidden = delivery === 0;
-    q('[data-cart-delivery]').textContent = rupee(delivery);
-    q('[data-cart-total]').textContent = rupee(subtotal + delivery);
+    q('[data-cart-total]').textContent = rupee(subtotal);
     q('[data-cart-eta]').textContent = formatDeliveryDate(DELIVERY_DAYS);
     saveCart(cart);
   };

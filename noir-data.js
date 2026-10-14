@@ -32,7 +32,7 @@
     if (!client) throw new Error('unavailable');
     const { data, error } = await client.rpc('place_order', { p_customer: customer, p_items: items });
     if (error) throw error;
-    return data; // { order_number, subtotal, delivery, total }
+    return data; // { order_number, subtotal, total }
   };
 
   window.NoirData = { available: Boolean(client), getStats, subscribeStats, placeOrder };
