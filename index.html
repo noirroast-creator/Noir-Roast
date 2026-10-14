@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Jost:wght@400;500&family=Nunito+Sans:opsz,wght@6..12,400;6..12,500;6..12,600;6..12,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261015c">
+  <link rel="stylesheet" href="styles.css?v=20261015f">
 </head>
 <body>
   <div class="announcement">
@@ -64,7 +64,18 @@
 
       <section class="products" id="shop" aria-label="Shop">
         <article class="product">
-          <img src="assets/product-original.jpg" alt="Single glass jar of peaberry coffee beans" width="220" height="181">
+          <div class="product-slider" data-slider role="group" aria-roledescription="carousel" aria-label="The Original photos">
+            <div class="slider-track">
+              <div class="slide"><img src="assets/product-original.jpg" alt="Single glass jar of peaberry coffee beans" style="object-position: 50% 55%"></div>
+              <div class="slide"><img data-src="assets/product-original-1.jpg" alt="NOIR ROAST Peaberry Coffee Beans jar with the lid off and chocolate-coated beans beside it" style="object-position: 50% 72%"></div>
+              <div class="slide"><img data-src="assets/product-original-2.jpg" alt="Front of the NOIR ROAST Peaberry Coffee Beans jar, coated with dark chocolate, 100 g" style="object-position: 50% 58%"></div>
+              <div class="slide"><img data-src="assets/product-original-3.jpg" alt="Back label of the jar showing ingredients, shelf life and net quantity" style="object-position: 50% 60%"></div>
+            </div>
+            <button class="slider-nav slider-prev" type="button" aria-label="Previous photo" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+            <button class="slider-nav slider-next" type="button" aria-label="Next photo" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+            <div class="slider-dots" hidden></div>
+            <span class="sr-only" aria-live="polite" data-slider-status></span>
+          </div>
           <div class="product-body">
             <p class="eyebrow">Single jar</p>
             <h3>The Original</h3>
@@ -74,7 +85,17 @@
           </div>
         </article>
         <article class="product">
-          <img src="assets/product-duo.jpg" alt="Two glass jars of peaberry coffee beans" width="220" height="184">
+          <div class="product-slider" data-slider role="group" aria-roledescription="carousel" aria-label="The Duo photos">
+            <div class="slider-track">
+              <div class="slide"><img src="assets/product-duo.jpg" alt="Two glass jars of peaberry coffee beans" style="object-position: 50% 55%"></div>
+              <div class="slide"><img data-src="assets/product-duo-1.jpg" alt="Two NOIR ROAST Peaberry Coffee Beans jars, one showing the front label and one the back label with ingredients" style="object-position: 50% 68%"></div>
+              <div class="slide"><img data-src="assets/product-duo-2.jpg" alt="Two NOIR ROAST Peaberry Coffee Beans jars side by side, coated with dark chocolate, 100 g each" style="object-position: 50% 62%"></div>
+            </div>
+            <button class="slider-nav slider-prev" type="button" aria-label="Previous photo" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+            <button class="slider-nav slider-next" type="button" aria-label="Next photo" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+            <div class="slider-dots" hidden></div>
+            <span class="sr-only" aria-live="polite" data-slider-status></span>
+          </div>
           <div class="product-body">
             <p class="eyebrow">Combo pack</p>
             <h3>The Duo</h3>
@@ -147,8 +168,9 @@
 
   <p class="sr-only" aria-live="polite" data-status></p>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-  <script src="config.js?v=20261015c"></script>
-  <script src="noir-data.js?v=20261015c"></script>
-  <script src="main.js?v=20261015c"></script>
+  <script src="config.js?v=20261015f"></script>
+  <script src="noir-data.js?v=20261015f"></script>
+  <script src="main.js?v=20261015f"></script>
+  <script src="product-slider.js?v=20261015f"></script>
 </body>
 </html>
