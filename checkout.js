@@ -87,6 +87,39 @@ Object.keys(rules).forEach((name) => {
 });
 ['phone', 'pin'].forEach((name) => field(name).addEventListener('input', (e) => { e.target.value = e.target.value.replace(/\D/g, ''); }));
 
+/* ---------- Razorpay Checkout ---------- */
+const loadRazorpay = () => new Promise((resolve, reject) => {
+  if (window.Razorpay) { resolve(); return; }
+  const script = document.createElement('script');
+  script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+  script.onload = () => resolve();
+  script.onerror = () => reject(new Error('razorpay_script'));
+  document.head.append(script);
+});
+
+// Resolves { paid: true, response } after payment, or { paid: false, failure? } if the customer closes it.
+const payWithRazorpay = async (payment, shipping) => {
+  await loadRazorpay();
+  return new Promise((resolve) => {
+    let failure = '';
+    const checkout = new window.Razorpay({
+      key: payment.key_id,
+      order_id: payment.razorpay_order_id,
+      amount: payment.amount,
+      currency: payment.currency,
+      name: 'NOIR ROAST',
+      description: `Order ${payment.order_number}`,
+      prefill: { name: shipping.name, email: shipping.email, contact: shipping.phone },
+      notes: { order_number: payment.order_number },
+      theme: { color: '#45291a' },
+      handler: (response) => resolve({ paid: true, response }),
+      modal: { ondismiss: () => resolve({ paid: false, failure }) },
+    });
+    checkout.on('payment.failed', (event) => { failure = (event && event.error && event.error.description) || 'payment failed'; });
+    checkout.open();
+  });
+};
+
 const ERRORS = {
   invalid_name: ['name', 'Please enter your full name.'],
   invalid_email: ['email', 'Please enter a valid email address.'],
@@ -101,6 +134,70 @@ const submitButton = $('.co-submit', form);
 const submitLabel = submitButton.innerHTML;
 const showFormError = (message) => { formError.textContent = message; formError.hidden = !message; };
 
+/* ---------- account: sign in with an emailed code when "Place order" is pressed ---------- */
+const accountLine = $('[data-account]');
+const emailField = field('email');
+let currentUser = null;
+let prefilled = false;
+
+const renderAccount = () => {
+  accountLine.replaceChildren();
+  if (currentUser) {
+    const who = el('strong', '', currentUser.email);
+    const out = el('button', 'auth-link', 'Not you? Sign out');
+    out.type = 'button';
+    out.dataset.signout = '';
+    accountLine.append('Signed in as ', who, ' \u00b7 ', out);
+  } else if (window.NoirData && window.NoirData.available) {
+    const signin = el('button', 'auth-link', 'Sign in');
+    signin.type = 'button';
+    signin.dataset.signin = '';
+    accountLine.append('Returning customer? ', signin);
+  }
+};
+
+// Fills only empty fields, from the customer's latest order.
+const prefillFromLastOrder = async () => {
+  if (prefilled) return;
+  prefilled = true;
+  try {
+    const last = await window.NoirData.getLastShipping();
+    if (!last) return;
+    const map = { name: last.full_name, phone: last.phone, addr1: last.address_line1, addr2: last.address_line2, city: last.city, state: last.state, pin: last.pin_code, landmark: last.landmark };
+    Object.entries(map).forEach(([name, value]) => { if (value && !field(name).value) field(name).value = value; });
+  } catch { /* nothing to pre-fill */ }
+};
+
+const applyUser = (user) => {
+  currentUser = user || null;
+  if (currentUser) {
+    emailField.value = currentUser.email;
+    emailField.readOnly = true;
+    setError('email', '');
+    prefillFromLastOrder();
+  } else {
+    emailField.readOnly = false;
+    prefilled = false;
+  }
+  renderAccount();
+};
+
+accountLine.addEventListener('click', async (event) => {
+  if (event.target.closest('[data-signout]')) {
+    try { await window.NoirData.signOut(); } catch { /* ignore */ }
+    applyUser(null);
+  } else if (event.target.closest('[data-signin]')) {
+    const user = await window.NoirAuthUI.open({ title: 'Welcome back', email: emailField.value });
+    if (user) applyUser(user);
+  }
+});
+
+if (window.NoirData && window.NoirData.available) {
+  window.NoirData.getUser().then(applyUser);
+  window.NoirData.onAuthChange(applyUser);
+}
+renderAccount();
+
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
   showFormError('');
@@ -108,17 +205,50 @@ form.addEventListener('submit', async (event) => {
   const firstBad = results.find(([, ok]) => !ok);
   if (firstBad) { field(firstBad[0]).focus(); status.textContent = 'Please fix the highlighted fields.'; return; }
 
-  const shipping = Object.fromEntries(new FormData(form).entries());
   submitButton.disabled = true;
-  submitButton.textContent = 'Placing your order\u2026';
   try {
     if (!window.NoirData || !window.NoirData.available) throw new Error('unavailable');
-    const order = await window.NoirData.placeOrder(shipping, items.map((i) => ({ id: i.id, qty: i.qty })));
+
+    // Sign in first (an emailed code), then carry straight on and place the order.
+    if (!currentUser) {
+      const user = await window.NoirAuthUI.open({ title: 'One last step', email: emailField.value });
+      if (!user) {
+        submitButton.disabled = false;
+        submitButton.focus({ preventScroll: true });
+        showFormError('Please sign in to place your order. We only email you a code, no password.');
+        return;
+      }
+      applyUser(user);
+    }
+
+    submitButton.textContent = 'Starting secure payment\u2026';
+    const shipping = Object.fromEntries(new FormData(form).entries());
+    const payment = await window.NoirData.createPayment(shipping, items.map((i) => ({ id: i.id, qty: i.qty })));
+
+    submitButton.textContent = 'Waiting for payment\u2026';
+    const result = await payWithRazorpay(payment, shipping);
+    if (!result.paid) {
+      submitButton.disabled = false;
+      submitButton.innerHTML = submitLabel;
+      submitButton.focus({ preventScroll: true });
+      showFormError(result.failure
+        ? `Your payment didn\u2019t go through (${result.failure}). Your bag is safe, so you can try again.`
+        : 'Payment wasn\u2019t completed. Your bag is safe, so you can try again whenever you\u2019re ready.');
+      return;
+    }
+
+    // Paid. Confirm it with our server; if that call fails the payment is still safe (Razorpay also notifies us).
+    submitButton.textContent = 'Confirming your payment\u2026';
+    let confirmed = null;
+    try { confirmed = await window.NoirData.verifyPayment(result.response); } catch { /* shown below */ }
     try { localStorage.removeItem(STORAGE_KEY); } catch { /* storage unavailable */ }
     $('[data-done-name]').textContent = shipping.name.trim().split(/\s+/)[0];
-    $('[data-done-id]').textContent = order.order_number;
-    $('[data-done-total]').textContent = rupee(Number(order.total));
+    $('[data-done-id]').textContent = payment.order_number;
+    $('[data-done-total]').textContent = rupee(Number(confirmed ? confirmed.total : payment.amount / 100));
     $('[data-done-eta]').textContent = formatDeliveryDate(DELIVERY_DAYS);
+    const note = $('[data-done-note]');
+    note.textContent = confirmed ? '' : `We received your payment (${result.response.razorpay_payment_id}) but couldn\u2019t confirm it on screen. It will show under My Orders shortly. Keep this number if you need help.`;
+    note.hidden = Boolean(confirmed);
     $('[data-step="1"]').hidden = true;
     $('[data-done]').hidden = false;
     document.body.classList.add('is-done');
@@ -126,8 +256,12 @@ form.addEventListener('submit', async (event) => {
     $('#done-title').focus({ preventScroll: true });
   } catch (err) {
     const known = ERRORS[err && err.message];
-    if (known) { setError(known[0], known[1]); field(known[0]).focus(); showFormError('Please fix the highlighted field.'); }
-    else showFormError('We couldn\u2019t place your order just now. Please check your connection and try again.');
+    if (err && (err.message === 'not_signed_in' || /jwt/i.test(err.message || ''))) {
+      applyUser(null);
+      showFormError('Your sign-in has expired. Please press Place order again to sign in.');
+    } else if (known) { setError(known[0], known[1]); field(known[0]).focus(); showFormError('Please fix the highlighted field.'); }
+    else if (err && err.message === 'razorpay_script') showFormError('We couldn\u2019t load the payment window. Please check your connection and try again.');
+    else showFormError('We couldn\u2019t start your payment just now. Please check your connection and try again. You haven\u2019t been charged.');
     submitButton.disabled = false;
     submitButton.innerHTML = submitLabel;
   }

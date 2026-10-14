@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Jost:wght@400;500&family=Nunito+Sans:opsz,wght@6..12,400;6..12,500;6..12,600;6..12,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261014a">
-  <link rel="stylesheet" href="checkout.css?v=20261014a">
+  <link rel="stylesheet" href="styles.css?v=20261015c">
+  <link rel="stylesheet" href="checkout.css?v=20261015c">
 </head>
 <body class="checkout">
   <header class="co-header">
@@ -34,6 +34,7 @@
       <!-- Step 1: shipping -->
       <section class="co-card" data-step="1" aria-labelledby="ship-title">
         <h2 id="ship-title" tabindex="-1">Shipping Information</h2>
+        <p class="co-account" data-account></p>
         <form id="ship-form" novalidate>
           <div class="co-grid co-grid-2">
             <div class="field">
@@ -106,6 +107,7 @@
         <p class="co-done-lead">Your order <strong data-done-id></strong> is confirmed.</p>
         <p>Order total <strong data-done-total></strong></p>
         <p>Estimated delivery <strong data-done-eta></strong></p>
+        <p class="co-done-note" data-done-note hidden></p>
         <a class="btn btn-dark co-submit" href="index.html">Continue shopping <span aria-hidden="true">&rarr;</span></a>
       </section>
     </div>
@@ -124,8 +126,9 @@
 
   <p class="sr-only" aria-live="polite" data-status></p>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-  <script src="config.js?v=20261014a"></script>
-  <script src="noir-data.js?v=20261014a"></script>
-  <script src="checkout.js?v=20261014a"></script>
+  <script src="config.js?v=20261015c"></script>
+  <script src="noir-data.js?v=20261015c"></script>
+  <script src="auth-ui.js?v=20261015c"></script>
+  <script src="checkout.js?v=20261015c"></script>
 </body>
 </html>

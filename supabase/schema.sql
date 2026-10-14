@@ -1,5 +1,7 @@
 -- NOIR ROAST: Supabase schema. Paste this whole file into Supabase > SQL Editor > Run.
 -- Safe to re-run: it only creates what is missing.
+-- After this file, also run supabase/accounts_update.sql (adds customer accounts and signed-in orders).
+-- Then run supabase/payments_update.sql (Razorpay payments; replaces place_order).
 
 -- 1) Catalogue. Prices live here so the browser can never set its own price.
 create table if not exists public.products (
