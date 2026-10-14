@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Jost:wght@400;500&family=Nunito+Sans:opsz,wght@6..12,400;6..12,500;6..12,600;6..12,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20261015g">
+  <link rel="stylesheet" href="styles.css?v=20261015k">
 </head>
 <body>
   <div class="announcement">
@@ -67,10 +67,9 @@
           <div class="product-slider" data-slider role="group" aria-roledescription="carousel" aria-label="The Original photos">
             <div class="slider-viewport">
             <div class="slider-track">
-              <div class="slide"><img src="assets/product-original.jpg" alt="Single glass jar of peaberry coffee beans" style="object-position: 50% 55%"></div>
-              <div class="slide"><img data-src="assets/product-original-1.jpg" alt="NOIR ROAST Peaberry Coffee Beans jar with the lid off and chocolate-coated beans beside it" style="object-position: 50% 72%"></div>
-              <div class="slide"><img data-src="assets/product-original-2.jpg" alt="Front of the NOIR ROAST Peaberry Coffee Beans jar, coated with dark chocolate, 100 g" style="object-position: 50% 58%"></div>
-              <div class="slide"><img data-src="assets/product-original-3.jpg" alt="Back label of the jar showing ingredients, shelf life and net quantity" style="object-position: 50% 60%"></div>
+              <div class="slide"><img src="assets/product-original-front.webp" alt="NOIR ROAST Peaberry Coffee Beans jar, coated with dark chocolate, 100 g, beside a bowl of beans and dark chocolate" style="object-position: 50% 60%"></div>
+              <div class="slide"><img data-src="assets/product-original-back.webp" alt="Back label of the jar showing ingredients, shelf life and net quantity" style="object-position: 50% 60%"></div>
+              <div class="slide"><img data-src="assets/product-original-open.webp" alt="Open jar of NOIR ROAST Peaberry Coffee Beans with chocolate-coated beans in the lid" style="object-position: 50% 60%"></div>
             </div></div>
             <button class="slider-nav slider-prev" type="button" aria-label="Previous photo" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
             <button class="slider-nav slider-next" type="button" aria-label="Next photo" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
@@ -82,16 +81,14 @@
             <h3>The Original</h3>
             <p class="product-desc">Peaberry coffee beans<br>in a premium glass jar.</p>
             <p class="price"><strong class="price-now">&#8377;999</strong> <s class="price-was"><span class="sr-only">Original price </span>&#8377;1,299</s> <span>/ 100 g</span></p>
-            <button class="btn btn-dark btn-add" type="button" data-add="The Original" data-id="original" data-price="999" data-sub="Single jar &middot; 100 g" data-img="assets/product-original.jpg">Add to bag <span aria-hidden="true">&rarr;</span></button>
+            <button class="btn btn-dark btn-add" type="button" data-add="The Original" data-id="original" data-price="999" data-sub="Single jar &middot; 100 g" data-img="assets/product-original-front.webp">Add to bag <span aria-hidden="true">&rarr;</span></button>
           </div>
         </article>
         <article class="product">
           <div class="product-slider" data-slider role="group" aria-roledescription="carousel" aria-label="The Duo photos">
             <div class="slider-viewport">
             <div class="slider-track">
-              <div class="slide"><img src="assets/product-duo.jpg" alt="Two glass jars of peaberry coffee beans" style="object-position: 50% 55%"></div>
-              <div class="slide"><img data-src="assets/product-duo-1.jpg" alt="Two NOIR ROAST Peaberry Coffee Beans jars, one showing the front label and one the back label with ingredients" style="object-position: 50% 68%"></div>
-              <div class="slide"><img data-src="assets/product-duo-2.jpg" alt="Two NOIR ROAST Peaberry Coffee Beans jars side by side, coated with dark chocolate, 100 g each" style="object-position: 50% 62%"></div>
+              <div class="slide"><img src="assets/product-duo-main.webp" alt="Two NOIR ROAST Peaberry Coffee Beans jars, one showing the front label and one the back label with ingredients" style="object-position: 40% 62%"></div>
             </div></div>
             <button class="slider-nav slider-prev" type="button" aria-label="Previous photo" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
             <button class="slider-nav slider-next" type="button" aria-label="Next photo" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
@@ -103,7 +100,7 @@
             <h3>The Duo</h3>
             <p class="product-desc">Two 100 g glass jars<br>for a richer experience.</p>
             <p class="price"><strong class="price-now">&#8377;1,899</strong> <s class="price-was"><span class="sr-only">Original price </span>&#8377;2,499</s> <span>/ 2 jars</span></p>
-            <button class="btn btn-dark btn-add" type="button" data-add="The Duo" data-id="duo" data-price="1899" data-sub="Combo pack &middot; 2 jars" data-img="assets/product-duo.jpg">Add to bag <span aria-hidden="true">&rarr;</span></button>
+            <button class="btn btn-dark btn-add" type="button" data-add="The Duo" data-id="duo" data-price="1899" data-sub="Combo pack &middot; 2 jars" data-img="assets/product-duo-main.webp">Add to bag <span aria-hidden="true">&rarr;</span></button>
           </div>
         </article>
       </section>
@@ -170,9 +167,9 @@
 
   <p class="sr-only" aria-live="polite" data-status></p>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-  <script src="config.js?v=20261015g"></script>
-  <script src="noir-data.js?v=20261015g"></script>
-  <script src="main.js?v=20261015g"></script>
-  <script src="product-slider.js?v=20261015g"></script>
+  <script src="config.js?v=20261015k"></script>
+  <script src="noir-data.js?v=20261015k"></script>
+  <script src="main.js?v=20261015k"></script>
+  <script src="product-slider.js?v=20261015k"></script>
 </body>
 </html>
