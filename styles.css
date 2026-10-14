@@ -906,7 +906,8 @@ body.auth-open { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) { .auth-modal { animation: none; } }
 
 /* ---------- Product photo slider (arrows on the product image) ---------- */
-.product-slider { position: relative; overflow: hidden; min-width: 0; min-height: 0; align-self: stretch; background: #efe9de; touch-action: pan-y; }
+.product-slider { position: relative; min-width: 0; min-height: 0; align-self: stretch; background: #efe9de; touch-action: pan-y; }
+.slider-viewport { position: absolute; inset: 0; overflow: hidden; background: #efe9de; }
 .slider-track { position: absolute; inset: 0; display: flex; transition: transform .45s cubic-bezier(.22, .8, .24, 1); will-change: transform; }
 .slide { position: relative; flex: 0 0 100%; min-width: 0; overflow: hidden; }
 .product-slider .slide img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; min-height: 0; aspect-ratio: auto; object-fit: cover; user-select: none; -webkit-user-drag: none; }
@@ -918,12 +919,19 @@ body.auth-open { overflow: hidden; }
 .slider-nav:hover { background: #fff; transform: scale(1.06); }
 .slider-nav svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .slider-nav[hidden], .slider-dots[hidden] { display: none; }
-.slider-prev { left: 10px; }
-.slider-next { right: 10px; }
+/* Arrows sit centred on the left and right edge lines of the photo. */
+.slider-prev { left: -18px; }
+.slider-next { right: -18px; }
 .slider-dots { position: absolute; left: 0; right: 0; bottom: 10px; z-index: 2; display: flex; justify-content: center; gap: 6px; pointer-events: none; }
 .slider-dot { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 50%; background: rgba(250, 247, 241, .6); box-shadow: 0 0 0 1px rgba(40, 25, 10, .25); cursor: pointer; pointer-events: auto; transition: background-color .2s ease, transform .2s ease; }
 .slider-dot.is-active { background: #fff; transform: scale(1.25); }
 @media (min-width: 768px) and (max-width: 1023.98px) { .product-slider { aspect-ratio: 4 / 3; align-self: start; } }
-@media (max-width: 520px) { .product-slider { aspect-ratio: 4 / 3; align-self: start; } .slider-nav { width: 34px; height: 34px; margin-top: -17px; } }
+@media (max-width: 520px) { .product-slider { aspect-ratio: 4 / 3; align-self: start; } }
+@media (max-width: 767.98px) {
+  .slider-nav { width: 32px; height: 32px; margin-top: -16px; }
+  .slider-nav svg { width: 16px; height: 16px; }
+  .slider-prev { left: -16px; }
+  .slider-next { right: -16px; }
+}
 @media (min-width: 1024px) { .product-slider { min-height: 260px; } }
 @media (prefers-reduced-motion: reduce) { .slider-track { transition: none; } }
