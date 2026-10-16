@@ -11,8 +11,8 @@ create table if not exists public.products (
   active     boolean not null default true
 );
 insert into public.products (id, name, price_inr) values
-  ('original', 'The Original', 999),
-  ('duo',      'The Duo',       1899)
+  ('original', 'The Original', 1299),
+  ('duo',      'The Duo',       2499)
 on conflict (id) do update set name = excluded.name, price_inr = excluded.price_inr;
 
 -- 2) Orders: real customer details. Nobody on the website can read these back.
