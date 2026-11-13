@@ -44,7 +44,7 @@ const status = $('[data-status]');
 const renderSummary = () => {
   $('[data-items]').replaceChildren(...items.map((item) => {
     const li = el('li', 'co-item');
-    const img = el('img'); img.src = item.img; img.alt = ''; img.width = 56; img.height = 66;
+    const img = el('img'); img.src = item.img; img.alt = ''; img.width = 76; img.height = 76;
     const info = el('div');
     info.append(el('p', 'co-item-name', item.name), el('p', 'co-item-qty', `Qty: ${item.qty}`));
     li.append(img, info, el('span', 'co-item-price', rupee(item.qty * Number(item.price))));
