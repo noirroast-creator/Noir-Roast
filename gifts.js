@@ -13,6 +13,7 @@ const el = (tag, className, text) => {
 };
 
 const ui = {
+  soundBtn: $('[data-sound]'),
   error: $('[data-error]'),
   signinBox: $('[data-signin-box]'),
   play: $('[data-play]'),
@@ -64,12 +65,78 @@ const renderAction = () => {
   b.textContent = status && status.left < status.total ? 'Try again' : 'Start';
 };
 
-const setState = (next) => { state = next; renderAction(); };
+const setState = (next) => {
+  state = next;
+  renderAction();
+};
+
+/* ---------- sound effects (synthesised in the browser, no audio files) ---------- */
+const SOUND_KEY = 'noir-roast-sound';
+let soundOn = true;
+try { soundOn = localStorage.getItem(SOUND_KEY) !== 'off'; } catch { /* storage unavailable */ }
+let audio = null;
+
+const ctx = () => {
+  if (!audio) {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    try { audio = new AC(); } catch { return null; }
+  }
+  if (audio.state === 'suspended') audio.resume();
+  return audio;
+};
+
+// One short note: frequency (optionally gliding to `to`), start offset, length, wave shape, loudness.
+const note = (freq, at, dur, type = 'sine', vol = 0.12, to = 0) => {
+  if (!soundOn) return;
+  const ac = ctx();
+  if (!ac) return;
+  const t = ac.currentTime + at;
+  const osc = ac.createOscillator();
+  const gain = ac.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, t);
+  if (to) osc.frequency.exponentialRampToValueAtTime(to, t + dur);
+  gain.gain.setValueAtTime(0.0001, t);
+  gain.gain.exponentialRampToValueAtTime(vol, t + 0.012);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  osc.connect(gain).connect(ac.destination);
+  osc.start(t);
+  osc.stop(t + dur + 0.03);
+};
+
+const sfx = {
+  open: () => { note(392, 0, 0.14, 'sine', 0.07, 587); },
+  close: () => { note(523, 0, 0.12, 'sine', 0.06, 330); },
+  start: () => { note(523, 0, 0.1, 'triangle', 0.12); note(784, 0.09, 0.16, 'triangle', 0.12); },
+  tick: () => { note(1500, 0, 0.035, 'square', 0.025); },
+  stop: () => { note(220, 0, 0.09, 'square', 0.1, 110); note(880, 0, 0.05, 'triangle', 0.08); },
+  win: () => { [523, 659, 784, 1047].forEach((f, i) => note(f, 0.08 * i, 0.32, 'triangle', 0.13)); note(1568, 0.34, 0.6, 'sine', 0.1); note(2093, 0.4, 0.5, 'sine', 0.05); },
+  close_call: () => { note(440, 0, 0.14, 'triangle', 0.11); note(554, 0.13, 0.22, 'triangle', 0.11); },
+  miss: () => { note(300, 0, 0.18, 'sawtooth', 0.07, 150); note(200, 0.16, 0.26, 'sawtooth', 0.07, 100); },
+};
+
+const renderSound = () => {
+  ui.soundBtn.setAttribute('aria-pressed', String(soundOn));
+  ui.soundBtn.setAttribute('aria-label', soundOn ? 'Sound on' : 'Sound off');
+};
+ui.soundBtn.addEventListener('click', () => {
+  soundOn = !soundOn;
+  try { localStorage.setItem(SOUND_KEY, soundOn ? 'on' : 'off'); } catch { /* storage unavailable */ }
+  renderSound();
+  if (soundOn) sfx.tick();
+});
+renderSound();
+// Browsers only allow sound after a tap, so wake the audio up on the first press inside the game.
+document.querySelector('.gf-game').addEventListener('pointerdown', () => ctx(), { once: true });
 
 /* ---------- the clock ---------- */
+let lastWholeSecond = 0;
 const tick = () => {
   const elapsed = performance.now() - t0;
   if (elapsed >= AUTO_END_MS) { stop(AUTO_END_MS); return; }
+  const whole = Math.floor(elapsed / 1000);
+  if (whole > lastWholeSecond) { lastWholeSecond = whole; sfx.tick(); }
   ui.clock.textContent = clockText(elapsed);
   raf = requestAnimationFrame(tick);
 };
@@ -88,6 +155,8 @@ const start = async () => {
     status = { ...status, left: started.left };
     renderMeta();
     t0 = performance.now(); // the clock begins when the customer actually sees it start
+    lastWholeSecond = 0;
+    sfx.start();
     ui.clock.textContent = '0.00';
     setState('running');
     raf = requestAnimationFrame(tick);
@@ -103,6 +172,7 @@ const stop = async (forcedMs) => {
   if (state !== 'running') return;
   const ms = Math.round(typeof forcedMs === 'number' ? forcedMs : performance.now() - t0);
   cancelAnimationFrame(raf);
+  sfx.stop();
   ui.clock.textContent = clockText(ms);
   setState('busy');
   const id = attemptId;
@@ -116,8 +186,10 @@ const stop = async (forcedMs) => {
       ui.result.classList.add('is-win');
       ui.result.textContent = 'Perfect stop! 10.00 exactly.';
       ui.note.textContent = `Your 10% coupon is ${out.code}. It is saved under Your coupons below.`;
+      window.setTimeout(sfx.win, 180);
     } else {
       const late = out.diff_ms > 0;
+      window.setTimeout(Math.abs(out.diff_ms) <= 500 ? sfx.close_call : sfx.miss, 180);
       ui.result.textContent = `${secs(out.diff_ms)}s too ${late ? 'late' : 'early'}.`;
       ui.note.textContent = out.left > 0
         ? `You have ${out.left} ${out.left === 1 ? 'chance' : 'chances'} left. Press Try again when you’re ready.`
