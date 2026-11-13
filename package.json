@@ -1,0 +1,13 @@
+{
+  "name": "noir-roast",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NOIR ROAST website (plain HTML, CSS and JavaScript). Dev server for local preview only.",
+  "scripts": {
+    "dev": "node dev-server.js",
+    "start": "node dev-server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

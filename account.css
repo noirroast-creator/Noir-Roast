@@ -43,3 +43,10 @@ body.account-page { background: var(--bg); }
   .ac-order { padding: 22px 18px; }
   .ac-btn { width: 100%; min-width: 0; }
 }
+
+/* Shipping progress inside an order */
+.ac-ship { margin-top: 18px; padding: 14px 16px; background: #f3efe2; border-left: 2px solid #c9a24a; }
+.ac-ship-status { font-weight: 700; font-size: 15.5px; color: var(--ink); }
+.ac-ship-detail { margin-top: 4px; font-size: 14.5px; color: #5f5448; overflow-wrap: anywhere; }
+.ac-ship-link { display: inline-block; margin-top: 10px; font-weight: 600; font-size: 14.5px; color: #8a6b24; border-bottom: 1px solid currentColor; }
+.ac-ship-link:hover { color: var(--brown); }

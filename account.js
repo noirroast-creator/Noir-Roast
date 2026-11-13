@@ -1,7 +1,19 @@
 // My Orders: shows the signed-in customer's own orders (the database only returns their own).
 const $ = (selector) => document.querySelector(selector);
 const rupee = (value) => '\u20B9' + Number(value).toLocaleString('en-IN');
-const STATUS = { new: 'Order received' };
+const STATUS = { new: 'Order received', shipped: 'Shipped', delivered: 'Delivered' };
+
+// Shipway's short status codes, in plain words.
+const SHIPMENT = {
+  SCH: 'Courier booked', RSCH: 'Pickup scheduled', RPKP: 'Picked up', INT: 'In transit', OOD: 'Out for delivery',
+  DEL: 'Delivered', UND: 'Delivery attempted, will retry', ONH: 'On hold', NFI: 'Update pending', NFIDS: 'Update pending',
+  RTO: 'Returning to us', RTD: 'Returned to us', CAN: 'Cancelled',
+};
+
+// Only ever link to normal web addresses.
+const safeUrl = (value) => {
+  try { const url = new URL(value); return url.protocol === 'https:' || url.protocol === 'http:' ? url.href : ''; } catch { return ''; }
+};
 
 const el = (tag, className, text) => {
   const node = document.createElement(tag);
@@ -28,6 +40,24 @@ const show = (which) => {
   sections.who.hidden = which === 'signedOut' || which === 'loading';
 };
 
+const renderShipping = (order) => {
+  if (!order.awb_number && !order.shipment_status) return null;
+  const box = el('div', 'ac-ship');
+  const label = SHIPMENT[order.shipment_status] || 'Shipped';
+  box.append(el('p', 'ac-ship-status', label));
+  const parts = [order.carrier_name, order.awb_number ? `Tracking no. ${order.awb_number}` : ''].filter(Boolean);
+  if (parts.length) box.append(el('p', 'ac-ship-detail', parts.join(' · ')));
+  const href = safeUrl(order.tracking_url);
+  if (href) {
+    const link = el('a', 'ac-ship-link', 'Track your parcel');
+    link.href = href;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    box.append(link);
+  }
+  return box;
+};
+
 const renderOrder = (order) => {
   const li = el('li', 'ac-order');
   const top = el('div', 'ac-order-top');
@@ -44,7 +74,10 @@ const renderOrder = (order) => {
   });
   const total = el('div', 'ac-total');
   total.append(el('span', '', 'Total'), el('strong', '', rupee(order.total_inr)));
-  li.append(top, chip, list, total);
+  li.append(top, chip, list);
+  const shipping = renderShipping(order);
+  if (shipping) li.append(shipping);
+  li.append(total);
   return li;
 };
 

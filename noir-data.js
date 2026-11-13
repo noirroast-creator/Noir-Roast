@@ -92,12 +92,15 @@
 
   // The signed-in customer's own orders, newest first (the database only returns their own).
   const getMyOrders = async () => {
-    const { data, error } = await need()
+    const run = (columns) => need()
       .from('orders')
-      .select('order_number, created_at, status, total_inr, order_items(product_name, quantity, unit_price_inr)')
+      .select(`${columns}, order_items(product_name, quantity, unit_price_inr)`)
       .eq('payment_status', 'paid')
       .order('created_at', { ascending: false })
       .limit(50);
+    let { data, error } = await run('order_number, created_at, status, total_inr, awb_number, carrier_name, tracking_url, shipment_status');
+    // Until the shipping database update has been run, the tracking columns do not exist yet: fall back to the basics.
+    if (error && error.code === '42703') ({ data, error } = await run('order_number, created_at, status, total_inr'));
     if (error) throw error;
     return data || [];
   };

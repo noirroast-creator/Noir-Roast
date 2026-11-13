@@ -1,5 +1,5 @@
 // NOIR ROAST: order-goal progress + shopping cart drawer.
-const DELIVERY_DAYS = 7;
+const DELIVERY_DAYS = 3;
 const STORAGE_KEY = 'noir-roast-cart';
 
 const rupee = (value) => '\u20B9' + value.toLocaleString('en-IN');

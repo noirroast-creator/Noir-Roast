@@ -17,6 +17,15 @@ export type Deps = {
   };
   fetch: typeof fetch;
   env: (name: string) => string | undefined;
+  // Called once when an order has just become paid (for example to send it to Shipway). Must not throw.
+  afterPaid?: (orderNumber: string) => void;
+};
+
+const notifyPaid = (d: Deps, paid: unknown) => {
+  const result = paid as { order_number?: string; already_paid?: boolean } | null;
+  if (result && result.already_paid === false && typeof result.order_number === 'string') {
+    try { d.afterPaid?.(result.order_number); } catch { /* shipping hand-off must never break a payment */ }
+  }
 };
 
 const DEFAULT_ORIGINS = ['https://noirroast.in', 'https://www.noirroast.in', 'http://localhost:5173', 'http://127.0.0.1:5173'];
@@ -125,6 +134,7 @@ const verify = async (req: Request, d: Deps, cors: Record<string, string>) => {
       ? json({ error: paid.error.message }, 400, cors)
       : json({ error: 'server_error' }, 500, cors);
   }
+  notifyPaid(d, paid.data);
   return json(paid.data as Json, 200, cors);
 };
 
@@ -149,6 +159,7 @@ const webhook = async (req: Request, d: Deps) => {
     if (paid.error.message === 'unknown_order') return new Response('unknown order', { status: 200 }); // not ours: do not retry
     return new Response('error', { status: 500 }); // let Razorpay retry
   }
+  notifyPaid(d, paid.data);
   return new Response('ok', { status: 200 });
 };
 
@@ -187,6 +198,18 @@ if (deno && typeof deno.serve === 'function') {
   const db = createClient(deno.env.get('SUPABASE_URL') ?? '', deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '', {
     auth: { persistSession: false, autoRefreshToken: false },
   });
-  const deps: Deps = { db: db as unknown as Deps['db'], fetch, env: (name) => deno.env.get(name) };
+  // After a payment is confirmed, ask the "shipway" function to send the order to Shipway.
+  // If that function is not deployed or fails, the payment is unaffected and the order is retried later.
+  const afterPaid = (orderNumber: string) => {
+    const call = fetch(`${deno.env.get('SUPABASE_URL')}/functions/v1/shipway/push`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ order_number: orderNumber }),
+    }).catch(() => undefined);
+    // deno-lint-ignore no-explicit-any
+    const runtime = (globalThis as any).EdgeRuntime;
+    if (runtime && typeof runtime.waitUntil === 'function') runtime.waitUntil(call);
+  };
+  const deps: Deps = { db: db as unknown as Deps['db'], fetch, env: (name) => deno.env.get(name), afterPaid };
   deno.serve((req: Request) => handle(req, deps));
 }

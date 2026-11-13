@@ -1,6 +1,6 @@
 // NOIR ROAST checkout: shipping form -> confirmation. Reads the cart saved by the shop page.
 const STORAGE_KEY = 'noir-roast-cart';
-const DELIVERY_DAYS = 7;
+const DELIVERY_DAYS = 3;
 
 const STATES = [
   'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Goa', 'Gujarat', 'Haryana',
