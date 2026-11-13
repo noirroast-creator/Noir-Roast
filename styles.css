@@ -861,6 +861,28 @@ body.cart-open { overflow: hidden; }
   .gifts { position: absolute; top: 15px; right: 72px; width: 22px; height: 22px; }
 }
 
+/* ---------- Three-bar menu ---------- */
+.menu-btn { display: grid; place-items: center; width: 40px; height: 40px; margin-left: -9px; padding: 0; border: 0; border-radius: 50%; background: none; color: #2b2219; cursor: pointer; transition: color .2s ease; }
+.menu-btn:hover { color: var(--gold); }
+.menu-btn svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; }
+@media (max-width: 767.98px) { .menu-btn { position: absolute; top: 6px; left: -8px; margin: 0; } }
+
+body.menu-open { overflow: hidden; }
+.menu-overlay { position: fixed; inset: 0; z-index: 110; background: rgba(27, 16, 12, .45); opacity: 0; visibility: hidden; transition: opacity .25s ease, visibility .25s ease; }
+.menu-drawer { position: fixed; top: 0; left: 0; bottom: 0; z-index: 120; display: flex; flex-direction: column; width: min(380px, 88vw); background: #fbf8f2; box-shadow: 8px 0 32px rgba(0, 0, 0, .14); transform: translateX(-104%); visibility: hidden; transition: transform .3s ease, visibility .3s ease; }
+body.menu-open .menu-overlay { opacity: 1; visibility: visible; }
+body.menu-open .menu-drawer { transform: none; visibility: visible; }
+.menu-head { display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+.menu-close { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; background: none; color: #2b2219; cursor: pointer; }
+.menu-close:hover { color: var(--gold); }
+.menu-close svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+.menu-head .menu-logo { justify-self: center; font-size: 15px; margin-right: -0.42em; color: #2b2219; }
+.menu-list { margin: 0; padding: 0; list-style: none; }
+.menu-list a { display: block; padding: 21px 24px; font-size: 17px; color: #2b2219; border-bottom: 1px solid #e9e2d3; transition: background .2s ease, color .2s ease; }
+.menu-list a:hover { background: #f3eee3; }
+.menu-list a[aria-current="page"] .menu-label { color: #7a3b25; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px; }
+@media (prefers-reduced-motion: reduce) { .menu-overlay, .menu-drawer { transition: none; } }
+
 /* ---------- Sign-in pop-up ---------- */
 body.auth-open { overflow: hidden; }
 .auth-overlay {

@@ -22,6 +22,14 @@ body.story-page { background: var(--bg); }
 .st-rule { display: block; width: 1px; height: 56px; margin: 0 auto 40px; background: linear-gradient(#c9b27a, transparent); }
 .st-text { font-family: var(--serif); font-weight: 500; font-size: clamp(24px, 2.6vw, 34px); line-height: 1.5; letter-spacing: -0.005em; color: var(--ink); }
 
+/* ---------- Founder story ---------- */
+.st-founder { padding: 8px 0 96px; }
+.st-prose { width: min(700px, 100% - 48px); margin-inline: auto; }
+.st-prose .st-eyebrow { display: flex; justify-content: center; }
+.st-founder-title { margin: 22px 0 40px; text-align: center; font-family: var(--serif); font-weight: 600; font-size: clamp(32px, 4.4vw, 52px); line-height: 1.1; letter-spacing: -0.015em; color: var(--ink); }
+.st-prose p:not(.st-eyebrow) { font-size: clamp(17px, 1.5vw, 19px); line-height: 1.85; color: #3d3027; }
+.st-prose p:not(.st-eyebrow) + p { margin-top: 24px; }
+
 /* ---------- Closing statement ---------- */
 .st-closing { padding-bottom: 120px; }
 .st-panel { padding: clamp(56px, 8vw, 104px) 24px; text-align: center; background: var(--panel); }
