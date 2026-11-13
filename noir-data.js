@@ -86,7 +86,7 @@
 
   // customer: { name, email, phone, addr1, addr2, city, state, pin, landmark }; items: [{ id, qty }]
   // Creates a pending order and a Razorpay order. Prices are worked out on the server.
-  const createPayment = (customer, items) => callPayments('create', { customer, items });
+  const createPayment = (customer, items, coupon) => callPayments('create', { customer, items, coupon: coupon || null });
   // payment: { razorpay_order_id, razorpay_payment_id, razorpay_signature }
   const verifyPayment = (payment) => callPayments('verify', payment);
 
@@ -116,10 +116,23 @@
     return data[0];
   };
 
+  /* ---------- Gifts & Coupons: the "stop the clock at 10.00" game (rules live in the database) ---------- */
+  const rpc = async (name, args) => {
+    const { data, error } = await need().rpc(name, args || {});
+    if (error) throw new Error(error.message || 'failed');
+    return data;
+  };
+  const gameStatus = () => rpc('game_status');
+  const gameStart = () => rpc('game_start');
+  const gameStop = (attemptId, clientMs) => rpc('game_stop', { p_attempt: attemptId, p_client_ms: clientMs });
+  const myCoupons = () => rpc('my_coupons');
+  const checkCoupon = (code) => rpc('check_coupon', { p_code: code });
+
   window.NoirData = {
     available: Boolean(client),
     getStats, subscribeStats,
     getUser, onAuthChange, sendCode, verifyCode, signOut,
     createPayment, verifyPayment, getMyOrders, getLastShipping,
+    gameStatus, gameStart, gameStop, myCoupons, checkCoupon,
   };
 })();

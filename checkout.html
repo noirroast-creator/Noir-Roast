@@ -133,6 +133,16 @@
       <h2 id="sum-title">Order Summary</h2>
       <ul class="co-items" data-items></ul>
 
+      <form class="co-coupon" data-coupon-form novalidate>
+        <label for="co-coupon-input">Coupon code</label>
+        <div class="co-coupon-row">
+          <input id="co-coupon-input" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="40" placeholder="NOIR-XXXXXXXX">
+          <button class="co-coupon-btn" type="submit" data-coupon-btn>Apply</button>
+        </div>
+        <p class="co-coupon-msg" data-coupon-msg role="status"></p>
+        <a class="co-coupon-link" href="gifts.html">Win 10% off in our timer game</a>
+      </form>
+
       <div class="co-ship">
         <svg class="co-ship-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 7h11v9H2z"/><path d="M13 10h4l3 3v3h-7"/><circle cx="6.5" cy="17.5" r="1.8"/><circle cx="16.5" cy="17.5" r="1.8"/></svg>
         <div class="co-ship-text">
@@ -140,6 +150,10 @@
           <span class="co-ship-sub">Delivery within 1&ndash;3 days</span>
         </div>
         <span class="co-free"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4h8l9 9-8 8z"/><circle cx="7.5" cy="8.5" r="1.2"/></svg>FREE</span>
+      </div>
+      <div class="co-discount" data-discount-row hidden>
+        <span>Coupon <b data-discount-code></b></span>
+        <strong data-discount-amount></strong>
       </div>
       <div class="co-total"><span>Total</span><strong data-sum-total></strong></div>
       <p class="co-secure">
@@ -152,7 +166,7 @@
   <p class="sr-only" aria-live="polite" data-status></p>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
   <script src="config.js?v=20261022a"></script>
-  <script src="noir-data.js?v=20261022a"></script>
+  <script src="noir-data.js?v=20261114a"></script>
   <script src="auth-ui.js?v=20261022a"></script>
   <script src="checkout.js?v=20261114a"></script>
 </body>

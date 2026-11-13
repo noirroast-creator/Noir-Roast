@@ -32,6 +32,7 @@ const DEFAULT_ORIGINS = ['https://noirroast.in', 'https://www.noirroast.in', 'ht
 const VALIDATION_ERRORS = new Set([
   'invalid_name', 'invalid_email', 'invalid_phone', 'invalid_address', 'invalid_city', 'invalid_state',
   'invalid_pin', 'invalid_items', 'invalid_quantity', 'invalid_product',
+  'invalid_coupon', 'coupon_used', 'coupon_expired',
 ]);
 
 const encoder = new TextEncoder();
@@ -86,7 +87,7 @@ const create = async (req: Request, d: Deps, cors: Record<string, string>) => {
   const body = await readJson(req);
   if (!body) return json({ error: 'bad_request' }, 400, cors);
 
-  const made = await d.db.rpc('create_order', { p_user: customer.id, p_email: customer.email, p_customer: (body.customer ?? {}) as Json, p_items: (body.items ?? []) as unknown as Json });
+  const made = await d.db.rpc('create_order', { p_user: customer.id, p_email: customer.email, p_customer: (body.customer ?? {}) as Json, p_items: (body.items ?? []) as unknown as Json, p_coupon: typeof body.coupon === 'string' && body.coupon.trim() ? body.coupon.trim().slice(0, 40) : null });
   if (made.error) {
     const code = made.error.message;
     return VALIDATION_ERRORS.has(code) ? json({ error: code }, 400, cors) : json({ error: 'server_error' }, 500, cors);

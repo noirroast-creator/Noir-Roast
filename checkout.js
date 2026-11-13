@@ -41,6 +41,21 @@ const items = loadCart();
 const status = $('[data-status]');
 
 /* ---------- summary ---------- */
+const COUPON_KEY = 'noir-roast-coupon';
+let coupon = null; // { code, percent_off } once checked against the server
+
+const subtotal = () => items.reduce((n, i) => n + i.qty * Number(i.price), 0);
+const discount = () => (coupon ? Math.floor((subtotal() * coupon.percent_off) / 100) : 0);
+const renderTotals = () => {
+  $('[data-sum-total]').textContent = rupee(subtotal() - discount());
+  const row = $('[data-discount-row]');
+  row.hidden = !coupon;
+  if (coupon) {
+    $('[data-discount-code]').textContent = coupon.code;
+    $('[data-discount-amount]').textContent = '−' + rupee(discount());
+  }
+};
+
 const renderSummary = () => {
   $('[data-items]').replaceChildren(...items.map((item) => {
     const li = el('li', 'co-item');
@@ -50,8 +65,7 @@ const renderSummary = () => {
     li.append(img, info, el('span', 'co-item-price', rupee(item.qty * Number(item.price))));
     return li;
   }));
-  const subtotal = items.reduce((n, i) => n + i.qty * Number(i.price), 0);
-  $('[data-sum-total]').textContent = rupee(subtotal);
+  renderTotals();
 };
 
 /* ---------- form ---------- */
@@ -175,6 +189,7 @@ const applyUser = (user) => {
     emailField.readOnly = true;
     setError('email', '');
     prefillFromLastOrder();
+    autoApplyStoredCoupon();
   } else {
     emailField.readOnly = false;
     prefilled = false;
@@ -197,6 +212,71 @@ if (window.NoirData && window.NoirData.available) {
   window.NoirData.onAuthChange(applyUser);
 }
 renderAccount();
+
+/* ---------- coupon (from the Gifts & Coupons game); the server re-checks it when the order is created ---------- */
+const couponForm = $('[data-coupon-form]');
+const couponInput = $('#co-coupon-input');
+const couponBtn = $('[data-coupon-btn]');
+const couponMsg = $('[data-coupon-msg]');
+const COUPON_ERRORS = {
+  invalid_coupon: 'That code isn’t valid for your account.',
+  coupon_used: 'That coupon has already been used.',
+  coupon_expired: 'That coupon has expired.',
+};
+const setCouponMsg = (text, ok) => { couponMsg.textContent = text; couponMsg.classList.toggle('is-ok', Boolean(ok)); };
+const renderCouponState = () => {
+  couponInput.readOnly = Boolean(coupon);
+  couponBtn.textContent = coupon ? 'Remove' : 'Apply';
+  renderTotals();
+};
+const removeCoupon = () => {
+  coupon = null;
+  couponInput.value = '';
+  try { localStorage.removeItem(COUPON_KEY); } catch { /* storage unavailable */ }
+  setCouponMsg('', false);
+  renderCouponState();
+};
+const applyCoupon = async (code, quiet) => {
+  couponBtn.disabled = true;
+  try {
+    if (!window.NoirData || !window.NoirData.available) throw new Error('unavailable');
+    const checked = await window.NoirData.checkCoupon(code);
+    coupon = { code: checked.code, percent_off: Number(checked.percent_off) };
+    couponInput.value = coupon.code;
+    setCouponMsg(`Coupon applied: ${coupon.percent_off}% off.`, true);
+  } catch (err) {
+    coupon = null;
+    if (!quiet) setCouponMsg(COUPON_ERRORS[err && err.message] || 'We couldn’t check that code just now. Please try again.', false);
+    else if (COUPON_ERRORS[err && err.message]) { try { localStorage.removeItem(COUPON_KEY); } catch { /* ignore */ } }
+  } finally {
+    couponBtn.disabled = false;
+    renderCouponState();
+  }
+};
+let storedCouponTried = false;
+function autoApplyStoredCoupon() {
+  if (storedCouponTried || coupon) return;
+  storedCouponTried = true;
+  let code = '';
+  try { code = localStorage.getItem(COUPON_KEY) || ''; } catch { /* storage unavailable */ }
+  if (code) { couponInput.value = code; applyCoupon(code, true); }
+}
+try { const saved = localStorage.getItem(COUPON_KEY); if (saved) couponInput.value = saved; } catch { /* storage unavailable */ }
+
+couponForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  if (coupon) { removeCoupon(); return; }
+  const code = couponInput.value.trim();
+  if (!code) { setCouponMsg('Enter your coupon code.', false); return; }
+  if (!currentUser) {
+    if (!window.NoirAuthUI) return;
+    const user = await window.NoirAuthUI.open({ title: 'Sign in to use your coupon', email: emailField.value });
+    if (!user) { setCouponMsg('Please sign in to use a coupon. We only email you a code.', false); return; }
+    storedCouponTried = true; // applyUser must not race this manual apply
+    applyUser(user);
+  }
+  await applyCoupon(code, false);
+});
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
@@ -223,7 +303,7 @@ form.addEventListener('submit', async (event) => {
 
     submitButton.textContent = 'Starting secure payment\u2026';
     const shipping = Object.fromEntries(new FormData(form).entries());
-    const payment = await window.NoirData.createPayment(shipping, items.map((i) => ({ id: i.id, qty: i.qty })));
+    const payment = await window.NoirData.createPayment(shipping, items.map((i) => ({ id: i.id, qty: i.qty })), coupon ? coupon.code : null);
 
     submitButton.textContent = 'Waiting for payment\u2026';
     const result = await payWithRazorpay(payment, shipping);
@@ -241,7 +321,7 @@ form.addEventListener('submit', async (event) => {
     submitButton.textContent = 'Confirming your payment\u2026';
     let confirmed = null;
     try { confirmed = await window.NoirData.verifyPayment(result.response); } catch { /* shown below */ }
-    try { localStorage.removeItem(STORAGE_KEY); } catch { /* storage unavailable */ }
+    try { localStorage.removeItem(STORAGE_KEY); if (coupon) localStorage.removeItem(COUPON_KEY); } catch { /* storage unavailable */ }
     $('[data-done-name]').textContent = shipping.name.trim().split(/\s+/)[0];
     $('[data-done-id]').textContent = payment.order_number;
     $('[data-done-total]').textContent = rupee(Number(confirmed ? confirmed.total : payment.amount / 100));
@@ -259,6 +339,9 @@ form.addEventListener('submit', async (event) => {
     if (err && (err.message === 'not_signed_in' || /jwt/i.test(err.message || ''))) {
       applyUser(null);
       showFormError('Your sign-in has expired. Please press Place order again to sign in.');
+    } else if (err && COUPON_ERRORS[err.message]) {
+      removeCoupon();
+      showFormError(`${COUPON_ERRORS[err.message]} The coupon was removed, so you can pay the full price or try again.`);
     } else if (known) { setError(known[0], known[1]); field(known[0]).focus(); showFormError('Please fix the highlighted field.'); }
     else if (err && err.message === 'razorpay_script') showFormError('We couldn\u2019t load the payment window. Please check your connection and try again.');
     else showFormError('We couldn\u2019t start your payment just now. Please check your connection and try again. You haven\u2019t been charged.');

@@ -136,6 +136,25 @@ body.checkout.is-empty .co-layout { grid-template-columns: minmax(0, 560px); jus
 .co-free { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 999px; background: #e3f0de; border: 1px solid #cfe3c8; font-weight: 700; font-size: 14px; letter-spacing: .1em; color: #2a5d36; }
 .co-free svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 .co-total { margin-top: 0; padding-top: 20px; border-top: 0; }
+.co-discount { display: flex; justify-content: space-between; align-items: baseline; padding: 16px 0 0; font-size: 16px; color: #2a5d36; }
+.co-discount[hidden] { display: none; }
+.co-discount b { font-family: "Courier New", monospace; letter-spacing: .08em; }
+.co-discount strong { font-weight: 700; font-variant-numeric: lining-nums; }
+.co-discount + .co-total { padding-top: 14px; }
+
+/* Coupon box */
+.co-coupon { padding: 20px 0 4px; }
+.co-coupon label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; color: #4b3e32; }
+.co-coupon-row { display: flex; gap: 10px; }
+.co-coupon-row input { flex: 1; min-width: 0; height: 46px; padding: 0 14px; font: inherit; font-size: 16px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink); background: #fff; border: 1px solid #d9ccb4; border-radius: 12px; }
+.co-coupon-row input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 2px rgba(156, 124, 51, .18); }
+.co-coupon-row input[readonly] { background: #f5efe3; }
+.co-coupon-btn { height: 46px; padding: 0 20px; border: 0; border-radius: 12px; font-family: var(--sans); font-weight: 700; font-size: 14px; letter-spacing: .04em; color: #fff; background: #2a1a10; cursor: pointer; }
+.co-coupon-btn:disabled { opacity: .6; cursor: progress; }
+.co-coupon-msg { min-height: 18px; margin-top: 8px; font-size: 14px; color: #a23f30; }
+.co-coupon-msg.is-ok { color: #2a5d36; }
+.co-coupon-link { display: inline-block; margin-top: 2px; font-size: 13.5px; color: #8a6b24; text-decoration: underline; text-underline-offset: 3px; }
+.co-ship { border-top: 1px solid #e8dfcf; margin-top: 8px; }
 
 /* Primary button: rounded, serif label */
 .co-submit { height: 60px; border-radius: 14px; font-family: var(--serif); font-weight: 600; font-size: 21px; letter-spacing: .06em; text-transform: none; align-items: center; justify-content: center; gap: 14px; background: #2a1a10; }

@@ -1,0 +1,67 @@
+/* NOIR ROAST - Gifts & Coupons page (timer game). Header/footer/pop-up styles come from styles.css. */
+
+body.gifts-page { background: var(--bg); }
+
+.gf-wrap { width: min(760px, 100% - 40px); margin: 0 auto; padding: 64px 0 110px; min-height: 60vh; }
+.gf-head { text-align: center; }
+.gf-eyebrow { display: inline-flex; align-items: center; gap: 14px; font-family: var(--display); font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase; color: #8a6b24; }
+.gf-eyebrow::before, .gf-eyebrow::after { content: ""; width: 30px; height: 1px; background: #c9b27a; }
+.gf-title { margin-top: 16px; font-family: var(--serif); font-weight: 600; font-size: clamp(40px, 6vw, 60px); line-height: 1; letter-spacing: -0.02em; }
+.gf-lead { max-width: 520px; margin: 16px auto 0; font-size: 17px; line-height: 1.55; color: #4b3e32; }
+
+.gf-error { margin-top: 28px; padding: 14px 16px; font-size: 15px; color: #8e3427; background: #fbeee9; border-left: 2px solid #b04a3a; }
+.gf-error[hidden] { display: none; }
+
+/* ---------- The game: dark card ---------- */
+.gf-game { margin-top: 44px; padding: 44px 28px 34px; text-align: center; color: #f4e8d8; background: #1b100c; border-radius: 28px; }
+.gf-game h2 { font-family: var(--serif); font-weight: 600; font-size: clamp(30px, 6vw, 42px); line-height: 1.1; color: #f7ecdc; }
+.gf-game-sub { max-width: 440px; margin: 12px auto 0; font-size: 17px; line-height: 1.5; color: #c9b9a3; }
+.gf-panel { margin: 30px auto 0; padding: 36px 20px 34px; max-width: 560px; background: #2a1913; border: 1px solid #3a251c; border-radius: 26px; }
+.gf-play[hidden], .gf-signin[hidden] { display: none; }
+.gf-signin p { max-width: 360px; margin: 0 auto 22px; font-size: 16px; line-height: 1.5; color: #d8c8b2; }
+
+.gf-clock { display: block; margin: 0 0 26px; font-family: var(--serif); font-weight: 600; font-size: clamp(76px, 22vw, 124px); line-height: 1; letter-spacing: 0.01em; color: #f7ecdc; font-feature-settings: "lnum" 1, "tnum" 1; font-variant-numeric: lining-nums tabular-nums; }
+.gf-clock.is-running { color: #f2d089; }
+.gf-clock.is-win { color: #9fe0a4; }
+
+.gf-btn { display: inline-flex; align-items: center; justify-content: center; min-width: 210px; height: 58px; padding: 0 34px; border: 0; border-radius: 999px; font-family: var(--serif); font-weight: 600; font-size: 22px; letter-spacing: 0.02em; color: #1b100c; background: #e9c97f; cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none; transition: background .2s ease, transform .1s ease; }
+.gf-btn:hover { background: #f1d696; }
+.gf-btn:active { transform: scale(.98); }
+.gf-btn:focus-visible { outline: 2px solid #f7ecdc; outline-offset: 3px; }
+.gf-btn.is-stop { background: #f7ecdc; min-width: 240px; height: 64px; }
+.gf-btn:disabled { background: #4a3628; color: #c9b39a; cursor: default; transform: none; }
+
+.gf-result { min-height: 28px; margin-top: 26px; font-size: 21px; color: #f0a08f; }
+.gf-result.is-win { color: #9fe0a4; font-weight: 600; }
+.gf-note { min-height: 22px; margin-top: 10px; font-size: 16px; color: #c9b9a3; }
+.gf-meta { margin-top: 22px; font-size: 16px; color: #b8a78f; }
+.gf-rules { max-width: 460px; margin: 22px auto 0; font-size: 13.5px; line-height: 1.5; color: #8f7f6a; }
+
+/* ---------- Coupons ---------- */
+.gf-coupons { margin-top: 48px; }
+.gf-coupons[hidden] { display: none; }
+.gf-coupons h2 { font-family: var(--serif); font-weight: 600; font-size: 32px; }
+.gf-coupon-list { margin: 20px 0 0; padding: 0; list-style: none; display: grid; gap: 14px; }
+.gf-coupon { display: grid; grid-template-columns: 1fr auto; gap: 14px 20px; align-items: center; padding: 22px 24px; background: #fbf9f5; border: 1px dashed #c9b27a; border-radius: 16px; }
+.gf-coupon-code { font-family: "Courier New", monospace; font-weight: 700; font-size: 22px; letter-spacing: 0.12em; color: var(--ink); overflow-wrap: anywhere; }
+.gf-coupon-off { margin-top: 4px; font-size: 15px; color: #4b3e32; }
+.gf-coupon-off strong { color: #8a6b24; }
+.gf-coupon-state { margin-top: 4px; font-size: 13.5px; color: #75695c; }
+.gf-coupon.is-dead { opacity: .6; }
+.gf-coupon-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; }
+.gf-small { height: 42px; padding: 0 20px; border-radius: 999px; font-family: var(--sans); font-weight: 700; font-size: 13px; letter-spacing: 0.06em; cursor: pointer; border: 1px solid #2a1a10; background: transparent; color: #2a1a10; text-decoration: none; display: inline-flex; align-items: center; }
+.gf-small.is-primary { background: #2a1a10; color: #fff; }
+.gf-small:hover { opacity: .85; }
+.gf-empty { margin-top: 18px; font-size: 16px; color: #5f5448; }
+.gf-empty[hidden] { display: none; }
+
+@media (max-width: 560px) {
+  .gf-wrap { padding: 40px 0 80px; }
+  .gf-game { padding: 34px 16px 26px; border-radius: 22px; }
+  .gf-panel { padding: 28px 14px 28px; border-radius: 22px; }
+  .gf-btn { width: 100%; max-width: 280px; }
+  .gf-coupon { grid-template-columns: 1fr; }
+  .gf-coupon-actions { justify-content: flex-start; }
+}
+
+@media (prefers-reduced-motion: reduce) { .gf-btn { transition: none; } }
